@@ -1,7 +1,7 @@
 <!-- sldsValidatorIgnore -->
 <!-- sldsValidatorIgnore -->
 <template>
-    <h2> Available Products</h2>
+    <lightning-card title = "Available Products" icon-name = "custom:custom63"> 
     <template if:true={productList}>
         <lightning-datatable data={productList} 
                             columns={columns} 
@@ -11,10 +11,12 @@
                             default-sort-direction={defaultSortDirection}
                             sorted-direction={sortDirection}
                             sorted-by={sortedBy}
-                            onsort={onHandleSort}>
+                            onsort={onHandleSort}
+                            onrowaction={handleRowAction}>
         </lightning-datatable>
     </template>
     <template if:true={error}>
         {error}
     </template>
+    </lightning-card>
 </template>

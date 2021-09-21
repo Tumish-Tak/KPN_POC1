@@ -1,8 +1,18 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import getProductList from '@salesforce/apex/ProductListController.getProductList';
+
 const COLUMNS = [
     {label:  'Name' , fieldName:  'ProductName' , type:  'text', sortable: true},
-    {label:  'List Price' , fieldName:  'UnitPrice' , type:  'currency', sortable: true}       
+    {label:  'List Price' , fieldName:  'UnitPrice' , type:  'currency', sortable: true},
+    {type: "button", typeAttributes: {  
+        label: 'Add Product',  
+        name: 'AddProduct',  
+        title: 'Add Product',  
+        disabled: false,  
+        value: 'addProduct',  
+        iconPosition: 'right',
+        variant: 'brand' 
+    }}   
 ];
 
 export default class ProductsList extends LightningElement {
@@ -56,5 +66,8 @@ export default class ProductsList extends LightningElement {
         this.productList = cloneData;
         this.sortDirection = sortDirection;
         this.sortedBy = sortedBy;
+    }
+
+    handleRowAction( event ) {
     }
 }
