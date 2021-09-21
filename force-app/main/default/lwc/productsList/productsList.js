@@ -2,15 +2,15 @@ import { LightningElement, api, wire, track } from 'lwc';
 import getProductList from '@salesforce/apex/ProductListController.getProductList';
 
 const COLUMNS = [
-    {label:  'Name' , fieldName:  'ProductName' , type:  'text', sortable: true},
+    {label:  'Id' , fieldName:  'Id' , type:  'text'}, 
+    {label:  'Product Name' , fieldName:  'ProductName' , type:  'text', sortable: true},   
     {label:  'List Price' , fieldName:  'UnitPrice' , type:  'currency', sortable: true},
     {type: "button", typeAttributes: {  
         label: 'Add Product',  
         name: 'AddProduct',  
         title: 'Add Product',  
         disabled: false,  
-        value: 'addProduct',  
-        iconPosition: 'right',
+        value: 'addProduct',
         variant: 'brand' 
     }}   
 ];
@@ -22,17 +22,18 @@ export default class ProductsList extends LightningElement {
     defaultSortDirection = 'asc';
     sortDirection = 'asc';
     sortedBy;
-
+    
     @wire (getProductList, {orderid:  '$recordId' }) 
     WireProductRecords({error, data}){
         if(data){
             let preparedProducts = [];
             data.forEach(prodtRec =>{
                 let preparedProduct = {};
-                preparedProduct.id = prodtRec.Product2ID;
+                preparedProduct.Id = prodtRec.Id;
                 preparedProduct.ProductName = prodtRec.Product2.Name;
                 preparedProduct.UnitPrice = prodtRec.UnitPrice;
                 preparedProducts.push(preparedProduct);
+                console.log("id is: "+ preparedProduct.Id);
             });
             this.productList = preparedProducts;
             this.error =  undefined ;
@@ -68,6 +69,8 @@ export default class ProductsList extends LightningElement {
         this.sortedBy = sortedBy;
     }
 
-    handleRowAction( event ) {
+    handleRowAction(event) {
+        const addedPBEid = event.detail.row.Id;
+        console.log("added PBE ID is-> " + addedPBEid);
     }
 }
