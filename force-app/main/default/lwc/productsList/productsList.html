@@ -1,23 +1,29 @@
 <!-- sldsValidatorIgnore -->
 <!-- sldsValidatorIgnore -->
 <template>
-    <lightning-card title = "Available Products" icon-name = "custom:custom63"> 
+    
     <template if:true={productList}>
-        <lightning-datatable data={productList} 
-                            columns={columns} 
-                            key-field="Id"
-                            show-row-number-column="true"
-                            hide-checkbox-column
-                            default-sort-direction={defaultSortDirection}
-                            sorted-direction={sortDirection}
-                            sorted-by={sortedBy}
-                            onsort={onHandleSort}
-                            onrowaction={handleRowAction}
-                            column-widths-mode="auto">
-        </lightning-datatable>
+        <lightning-card title = "Available Products" icon-name = "custom:custom63"> 
+                <lightning-datatable data={productList} 
+                                    columns={columns} 
+                                    key-field="Id"
+                                    show-row-number-column="true"
+                                    hide-checkbox-column
+                                    default-sort-direction={defaultSortDirection}
+                                    sorted-direction={sortDirection}
+                                    sorted-by={sortedBy}
+                                    onsort={onHandleSort}
+                                    onrowaction={handleRowAction}
+                                    column-widths-mode="auto">
+                </lightning-datatable>
+        </lightning-card>
+        <lightning-card title = "Order Products" icon-name = "custom:custom61"> 
+               <c-order-product-list order-product={addedPBEid}></c-order-product-list>
+        </lightning-card> 
     </template>
+
     <template if:true={error}>
         {error}
     </template>
-    </lightning-card>
+    
 </template>

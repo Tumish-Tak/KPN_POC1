@@ -1,8 +1,8 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import getProductList from '@salesforce/apex/ProductListController.getProductList';
 
-const COLUMNS = [
-    {label:  'Id' , fieldName:  'Id' , type:  'text'}, 
+const COLUMNS = 
+[
     {label:  'Product Name' , fieldName:  'ProductName' , type:  'text', sortable: true},   
     {label:  'List Price' , fieldName:  'UnitPrice' , type:  'currency', sortable: true},
     {type: "button", typeAttributes: {  
@@ -18,10 +18,12 @@ const COLUMNS = [
 export default class ProductsList extends LightningElement {
     @api recordId;
     @track productList;
+    @track error;
     @track columns = COLUMNS;
     defaultSortDirection = 'asc';
     sortDirection = 'asc';
     sortedBy;
+    addedPBEid;
     
     @wire (getProductList, {orderid:  '$recordId' }) 
     WireProductRecords({error, data}){
@@ -70,7 +72,7 @@ export default class ProductsList extends LightningElement {
     }
 
     handleRowAction(event) {
-        const addedPBEid = event.detail.row.Id;
-        console.log("added PBE ID is-> " + addedPBEid);
+        this.addedPBEid = event.detail.row.Id;
+        console.log("added PBE ID is-> " + this.addedPBEid);
     }
 }
