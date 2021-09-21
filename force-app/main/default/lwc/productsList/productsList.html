@@ -1,3 +1,10 @@
 <template>
-    
+    <h2> Available Products</h2>
+    <template if:true={productList}>
+        <lightning-datatable data={productList} columns={columns} key-field="Id">
+        </lightning-datatable>
+    </template>
+    <template if:true={error}>
+        {error}
+    </template>
 </template>
