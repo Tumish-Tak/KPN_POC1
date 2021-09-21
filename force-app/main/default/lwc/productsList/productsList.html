@@ -1,7 +1,17 @@
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
 <template>
     <h2> Available Products</h2>
     <template if:true={productList}>
-        <lightning-datatable data={productList} columns={columns} key-field="Id">
+        <lightning-datatable data={productList} 
+                            columns={columns} 
+                            key-field="Id"
+                            show-row-number-column="true"
+                            hide-checkbox-column
+                            default-sort-direction={defaultSortDirection}
+                            sorted-direction={sortDirection}
+                            sorted-by={sortedBy}
+                            onsort={onHandleSort}>
         </lightning-datatable>
     </template>
     <template if:true={error}>
