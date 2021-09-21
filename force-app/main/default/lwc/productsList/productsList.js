@@ -4,11 +4,11 @@ export default class ProductsList extends LightningElement {
     @api recordId;
     @track productList;
     @track columns = [
-        {label:  'Name' , fieldName:  'Product2.Name' , type:  'text'  },
-        {label:  'List Price' , fieldName:  'UnitPrice' , type:  'currency'  }
+        {label:  'Name' , fieldName:  'Product2.Name' , type:  'text'},
+        {label:  'List Price' , fieldName:  'UnitPrice' , type:  'currency'}
     ];
 
-    @wire (getProductList, {orderid:  '$ recordId' }) 
+    @wire (getProductList, {orderid:  '$recordId' }) 
     WireProductRecords ({error, data}) {
         if (data) {
             this.productList = data;
