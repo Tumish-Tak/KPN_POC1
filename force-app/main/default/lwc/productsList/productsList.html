@@ -1,7 +1,6 @@
 <!-- sldsValidatorIgnore -->
 <!-- sldsValidatorIgnore -->
-<template>
-    
+<template>    
     <template if:true={productList}>
         <lightning-card title = "Available Products" icon-name = "custom:custom63"> 
                 <lightning-datatable data={productList} 
@@ -18,8 +17,8 @@
                 </lightning-datatable>
         </lightning-card>
         <lightning-card title = "Order Products" icon-name = "custom:custom61"> 
-               <c-order-product-list order-product={addedPBEid}></c-order-product-list>
-        </lightning-card> 
+               <c-order-product-list order-id={recordId}></c-order-product-list>
+        </lightning-card>
     </template>
 
     <template if:true={error}>

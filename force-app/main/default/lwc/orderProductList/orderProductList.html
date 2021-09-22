@@ -1,3 +1,18 @@
 <template>
-    <p>This is child component - {orderProduct}</p>
+    <template if:true={orderProducts}>
+                <lightning-datatable data={orderProducts} 
+                                    columns={columns} 
+                                    key-field="Id"
+                                    show-row-number-column="true"
+                                    hide-checkbox-column
+                                    default-sort-direction={defaultSortDirection}
+                                    sorted-direction={sortDirection}
+                                    sorted-by={sortedBy}
+                                    onsort={onHandleSort}
+                                    column-widths-mode="auto">
+                </lightning-datatable>
+    </template>
+    <template if:true={error}>
+        {error}
+    </template>
 </template>
