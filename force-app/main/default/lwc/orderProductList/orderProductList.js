@@ -1,5 +1,8 @@
 import { LightningElement, api, track, wire } from 'lwc';
+import { refreshApex } from '@salesforce/apex';
 import getOrderProducts from '@salesforce/apex/OrderProductListController.getOrderProducts';
+import upsertOrderItem from '@salesforce/apex/OrderProductListController.upsertOrderItem';
+import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 const COLUMNS = [
     {label:  'Product Name' , fieldName:  'ProductName' , type:  'text', sortable: true},   
     {label:  'Unit Price' , fieldName:  'UnitPrice' , type:  'currency', sortable: true},
@@ -8,6 +11,8 @@ const COLUMNS = [
 ];
 export default class OrderProductList extends LightningElement {
     @api orderId;
+    @track priceBookEntryId;
+    @track selectedprodPrice;
     @track orderProducts;
     @track error;
     @track columns = COLUMNS;
@@ -18,6 +23,7 @@ export default class OrderProductList extends LightningElement {
     @wire (getOrderProducts, {selectedOrderid: '$orderId'})
     WireOrderProductRecords({error, data}){
         if(data){
+            this.orderProducts=data;
             let preparedOrderItems = [];
             data.forEach(orderItemRec =>{
                 let preparedItem = {};
@@ -28,11 +34,11 @@ export default class OrderProductList extends LightningElement {
                 preparedItem.TotalPrice = orderItemRec.TotalPrice;
                 preparedOrderItems.push(preparedItem);
             });
-            this.orderProducts = preparedOrderItems;
-            this.error =  undefined ;
+            this.orderProducts = [...preparedOrderItems];
+            this.error =  undefined;
         } else{
             this.error = error;
-            this.orderProducts =  undefined ;
+            this.orderProducts =  undefined;
         }
     }
 
@@ -60,5 +66,29 @@ export default class OrderProductList extends LightningElement {
         this.orderProducts = cloneData;
         this.sortDirection = sortDirection;
         this.sortedBy = sortedBy;
+    }
+
+    @api addProduct(childPBEid, productPrice){  
+        this.priceBookEntryId = childPBEid;
+        this.selectedprodPrice = productPrice;
+        console.log("OrderID is - "+this.orderId+" and PBEID is - "+this.priceBookEntryId+" and price is :- "+this.selectedprodPrice);
+        upsertOrderItem({
+            pbeIDparam: this.priceBookEntryId,
+            orderIdparam: this.orderId,
+            listPriceparam: this.selectedprodPrice
+        })
+        .then(() => {
+            refreshApex(this.orderProducts);           
+                const toastEvent = new ShowToastEvent({
+                    title:'Success!',
+                    message:'Order Product added successfully',
+                    variant:'success'
+                  });
+                  this.dispatchEvent(toastEvent);
+        })
+        .catch((error) => {
+            this.message = 'Error received: code' + error.errorCode + ', ' +
+                'message ' + error.body.message;
+        });
     }
 }

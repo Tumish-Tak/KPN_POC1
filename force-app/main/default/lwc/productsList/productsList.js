@@ -23,7 +23,8 @@ export default class ProductsList extends LightningElement {
     defaultSortDirection = 'asc';
     sortDirection = 'asc';
     sortedBy;
-    addedPBEid;
+    @track addedPBEid;
+    @track selectedProdPrice;
     
     @wire (getProductList, {orderid:  '$recordId' }) 
     WireProductRecords({error, data}){
@@ -37,11 +38,11 @@ export default class ProductsList extends LightningElement {
                 preparedProducts.push(preparedProduct);
                 console.log("id is: "+ preparedProduct.Id);
             });
-            this.productList = preparedProducts;
-            this.error =  undefined ;
+            this.productList = [...preparedProducts];
+            this.error =  undefined;
         } else{
             this.error = error;
-            this.productList =  undefined ;
+            this.productList =  undefined;
         }
     }
 
@@ -73,6 +74,8 @@ export default class ProductsList extends LightningElement {
 
     handleRowAction(event) {
         this.addedPBEid = event.detail.row.Id;
-        console.log("added PBE ID is-> " + this.addedPBEid);
+        this.selectedProdPrice = event.detail.row.UnitPrice;
+        console.log("PBE ID in Parent is :- "+this.addedPBEid);
+        this.template.querySelector("c-order-product-list").addProduct(this.addedPBEid, this.selectedProdPrice);
     }
 }

@@ -1,3 +1,5 @@
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
 <template>
     <template if:true={orderProducts}>
                 <lightning-datatable data={orderProducts} 
@@ -8,8 +10,7 @@
                                     default-sort-direction={defaultSortDirection}
                                     sorted-direction={sortDirection}
                                     sorted-by={sortedBy}
-                                    onsort={onHandleSort}
-                                    column-widths-mode="auto">
+                                    onsort={onHandleSort}>                                
                 </lightning-datatable>
     </template>
     <template if:true={error}>
