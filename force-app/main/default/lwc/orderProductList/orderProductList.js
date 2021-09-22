@@ -16,16 +16,17 @@ export default class OrderProductList extends LightningElement {
     @track orderProducts;
     @track error;
     @track columns = COLUMNS;
+    wiredOrderProducts;
     defaultSortDirection = 'asc';
     sortDirection = 'asc';
     sortedBy;
 
     @wire (getOrderProducts, {selectedOrderid: '$orderId'})
-    WireOrderProductRecords({error, data}){
-        if(data){
-            this.orderProducts=data;
+    WireOrderProductRecords(result){
+        this.wiredOrderProducts=result;
+        if(result.data){
             let preparedOrderItems = [];
-            data.forEach(orderItemRec =>{
+            result.data.forEach(orderItemRec =>{
                 let preparedItem = {};
                 preparedItem.Id = orderItemRec.Id;
                 preparedItem.ProductName = orderItemRec.Product2.Name;
@@ -37,7 +38,7 @@ export default class OrderProductList extends LightningElement {
             this.orderProducts = [...preparedOrderItems];
             this.error =  undefined;
         } else{
-            this.error = error;
+            this.error = result.error;
             this.orderProducts =  undefined;
         }
     }
@@ -77,14 +78,14 @@ export default class OrderProductList extends LightningElement {
             orderIdparam: this.orderId,
             listPriceparam: this.selectedprodPrice
         })
-        .then(() => {
-            refreshApex(this.orderProducts);           
+        .then(() => {                      
                 const toastEvent = new ShowToastEvent({
                     title:'Success!',
                     message:'Order Product added successfully',
                     variant:'success'
                   });
                   this.dispatchEvent(toastEvent);
+                  return refreshApex(this.wiredOrderProducts); 
         })
         .catch((error) => {
             this.message = 'Error received: code' + error.errorCode + ', ' +
