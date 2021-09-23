@@ -1,5 +1,5 @@
 import { LightningElement, api, wire, track } from 'lwc';
-import { updateRecord, getRecord } from 'lightning/uiRecordApi';
+import { updateRecord, getRecord, getRecordNotifyChange } from 'lightning/uiRecordApi';
 import getProductList from '@salesforce/apex/ProductListController.getProductList';
 import ORDER_OBJECT from '@salesforce/schema/Order';
 import ORDER_STATUS_FIELD from '@salesforce/schema/Order.Status';
@@ -109,5 +109,8 @@ export default class ProductsList extends LightningElement {
                 preparedProducts.push(preparedProduct);
             });
             this.productList = [...preparedProducts]; 
+
+            // Notify LDS about the Order Status Change to refresh detail page.
+            getRecordNotifyChange([{recordId: this.recordId}]);
     }
 }

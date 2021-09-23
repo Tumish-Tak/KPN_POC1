@@ -22,7 +22,7 @@ public with sharing class OrderProductListController {
                                             WITH SECURITY_ENFORCED 
                                             LIMIT 1];
             if(!orderItemList.isEmpty()){
-                orderItemList[0].Quantity = (orderItemList[0].Quantity) + 1;
+                orderItemList[0].Quantity += 1;
                 update orderItemList;
             }
             else{

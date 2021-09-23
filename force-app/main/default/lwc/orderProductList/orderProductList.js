@@ -112,13 +112,12 @@ export default class OrderProductList extends LightningElement {
             
             //Disabling Activate Order Button      
                   this.disableActivateButton = true; 
-                  
+
             //Firing event from child to parent to pass Status value
                   this.status = 'Activated';
                   const selectedEvent = new CustomEvent("statuschange", {
                     detail:this.status 
                   });              
-            // Dispatches the event.
                   this.dispatchEvent(selectedEvent);                   
         })
         .catch((error) => {
