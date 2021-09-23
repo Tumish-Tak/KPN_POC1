@@ -18,6 +18,7 @@ export default class OrderProductList extends LightningElement {
     @track orderProducts;
     @track error;
     @track columns = COLUMNS;
+    @track disableActivateButton = false;
     wiredOrderProducts;
     defaultSortDirection = 'asc';
     sortDirection = 'asc';
@@ -38,6 +39,9 @@ export default class OrderProductList extends LightningElement {
                 preparedOrderItems.push(preparedItem);
             });
             this.orderProducts = [...preparedOrderItems];
+            if(result.data[0].Order.Status==='Activated'){
+                this.disableActivateButton = true;
+            }
             this.error =  undefined;
         } else{
             this.error = result.error;
@@ -105,13 +109,16 @@ export default class OrderProductList extends LightningElement {
                     variant:'success'
                   });
                   this.dispatchEvent(activateOrderEvent);
-                       
-     //Firing event from child to parent to pass Status value
+            
+            //Disabling Activate Order Button      
+                  this.disableActivateButton = true; 
+                  
+            //Firing event from child to parent to pass Status value
                   this.status = 'Activated';
                   const selectedEvent = new CustomEvent("statuschange", {
                     detail:this.status 
                   });              
-    // Dispatches the event.
+            // Dispatches the event.
                   this.dispatchEvent(selectedEvent);                   
         })
         .catch((error) => {

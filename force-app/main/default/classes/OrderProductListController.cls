@@ -2,10 +2,10 @@ public with sharing class OrderProductListController {
     
     @AuraEnabled(cacheable=true)
     public static List<OrderItem> getOrderProducts(id selectedOrderid) {
-       try{ return [Select Id, Quantity, Product2Id, Product2.Name, UnitPrice, TotalPrice 
-                from OrderItem
-                where OrderId =:selectedOrderid
-                WITH SECURITY_ENFORCED];
+       try{ return [SELECT Id, Quantity, Product2Id, Product2.Name, UnitPrice, TotalPrice, Order.Status 
+                    FROM OrderItem
+                    WHERE OrderId =:selectedOrderid
+                    WITH SECURITY_ENFORCED];
        }
        catch(Exception e){
            throw new AuraHAndledException(e.getmessage());

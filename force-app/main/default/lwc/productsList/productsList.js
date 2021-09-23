@@ -109,6 +109,5 @@ export default class ProductsList extends LightningElement {
                 preparedProducts.push(preparedProduct);
             });
             this.productList = [...preparedProducts]; 
-            //updateRecord({fields: this.recordId});
     }
 }
