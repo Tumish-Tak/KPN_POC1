@@ -2,6 +2,8 @@
 <!-- sldsValidatorIgnore -->
 <template>
     <template if:true={orderProducts}>
+        <lightning-card title = "Order Products" icon-name = "custom:custom61">
+            <lightning-button slot="actions" variant="brand" label="Activate Order" title="Activate Order" onclick={handleActivateOrder} class="slds-m-left_small"></lightning-button>
                 <lightning-datatable data={orderProducts} 
                                     columns={columns} 
                                     key-field="Id"
@@ -12,6 +14,7 @@
                                     sorted-by={sortedBy}
                                     onsort={onHandleSort}>                                
                 </lightning-datatable>
+        </lightning-card>
     </template>
     <template if:true={error}>
         {error}

@@ -40,4 +40,21 @@ public with sharing class OrderProductListController {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
+    @AuraEnabled
+    public static void activateOrder(id orderIdparam){
+        try {
+            List<Order> orderList = [select id,Status 
+                                    from Order 
+                                    where id=:orderIdparam
+                                    WITH SECURITY_ENFORCED];
+            system.debug('order lsit for update is : '+ orderList);
+            if(!(orderList.isEmpty()) && orderList[0].Status == 'Draft'){
+                orderList[0].Status='Activated';
+                update orderList;
+            }
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
 }

@@ -2,6 +2,7 @@ import { LightningElement, api, track, wire } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getOrderProducts from '@salesforce/apex/OrderProductListController.getOrderProducts';
 import upsertOrderItem from '@salesforce/apex/OrderProductListController.upsertOrderItem';
+import activateOrder from '@salesforce/apex/OrderProductListController.activateOrder';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 const COLUMNS = [
     {label:  'Product Name' , fieldName:  'ProductName' , type:  'text', sortable: true},   
@@ -11,6 +12,7 @@ const COLUMNS = [
 ];
 export default class OrderProductList extends LightningElement {
     @api orderId;
+    @api status;
     @track priceBookEntryId;
     @track selectedprodPrice;
     @track orderProducts;
@@ -79,17 +81,41 @@ export default class OrderProductList extends LightningElement {
             listPriceparam: this.selectedprodPrice
         })
         .then(() => {                      
-                const toastEvent = new ShowToastEvent({
+                const addProductEvent = new ShowToastEvent({
                     title:'Success!',
-                    message:'Order Product added successfully',
+                    message:'OrderProduct added successfully',
                     variant:'success'
                   });
-                  this.dispatchEvent(toastEvent);
+                  this.dispatchEvent(addProductEvent);
                   return refreshApex(this.wiredOrderProducts); 
         })
         .catch((error) => {
-            this.message = 'Error received: code' + error.errorCode + ', ' +
-                'message ' + error.body.message;
+            this.message = 'Error received: code' + error.errorCode + ', ' + 'message ' + error.body.message;
+        });
+    }
+
+    handleActivateOrder(){
+        activateOrder({
+            orderIdparam: this.orderId
+        })
+        .then(() => {         
+                  const activateOrderEvent = new ShowToastEvent({
+                    title:'Success!',
+                    message:'Order Activated Successfully',
+                    variant:'success'
+                  });
+                  this.dispatchEvent(activateOrderEvent);
+                       
+     //Firing event from child to parent to pass Status value
+                  this.status = 'Activated';
+                  const selectedEvent = new CustomEvent("statuschange", {
+                    detail:this.status 
+                  });              
+    // Dispatches the event.
+                  this.dispatchEvent(selectedEvent);                   
+        })
+        .catch((error) => {
+            this.message = 'Error received: code' + error.errorCode + ', ' + 'message ' + error.body.message;
         });
     }
 }

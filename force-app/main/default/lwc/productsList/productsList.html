@@ -16,11 +16,9 @@
                                     onsort={onHandleSort}
                                     onrowaction={handleRowAction}>
                 </lightning-datatable>
-            
-        </lightning-card>
-    
-        <lightning-card title = "Order Products" icon-name = "custom:custom61"> 
-             <c-order-product-list order-id={recordId}></c-order-product-list>
+                    
+             <c-order-product-list order-id={recordId} onstatuschange={handleStatusChange}></c-order-product-list>
+        
         </lightning-card>
         
     </template>
