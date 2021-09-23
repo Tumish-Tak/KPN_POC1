@@ -4,6 +4,7 @@ import getProductList from '@salesforce/apex/ProductListController.getProductLis
 import ORDER_OBJECT from '@salesforce/schema/Order';
 import ORDER_STATUS_FIELD from '@salesforce/schema/Order.Status';
 
+// declaring constant properties and their attributes. **********************
 const COLUMNS = 
 [
     {label:  'Product Name' , fieldName:  'ProductName' , type:  'text', sortable: true},   
@@ -18,20 +19,26 @@ const COLUMNS =
         iconPosition: 'right'
     }}   
 ];
+// declaration of constants ENDs here *****************************************
 
+//Definition of default LWC class BEGINs***************************************
 export default class ProductsList extends LightningElement {
+
+ //property declaration ******************************************************* 
     @api recordId;
     @api record;
     @track productList;
     @track error;
-    @track columns = COLUMNS;    
+    @track columns = COLUMNS; 
+    @track orderStatus;   
     defaultSortDirection = 'asc';
     sortDirection = 'asc';
     sortedBy;
     addedPBEid;
     selectedProdPrice;
-    @track orderStatus;
-    
+//property declaration ENDs here *********************************************    
+ 
+//LDS wire service to get current ORDER status to determine ENABLE/DISABLE Add Order button.
     @wire(getRecord, {recordId:'$recordId', fields: [ORDER_STATUS_FIELD]})
     wiredOrder({ error, data }) {
         if (data) {
@@ -43,7 +50,9 @@ export default class ProductsList extends LightningElement {
             this.record = undefined;
         }
     }
+//LDS wire ENDs here**********************************************************
 
+//wired call to apex method of class ProductListController to get priceBookentries to show in Table
     @wire (getProductList, {orderid:  '$recordId', orderStatusparam: '$orderStatus'}) 
     WireProductRecords(result){
         if(result.data){
@@ -63,7 +72,9 @@ export default class ProductsList extends LightningElement {
             this.productList =  undefined;
         }
     }
+//wired call ENDs here *******************************************************************
 
+// Standard lightningDataTable component logic for sorting cloumns ********************
     sortBy(field, reverse, primer) {
         const key = primer
             ? function (x) {
@@ -89,13 +100,17 @@ export default class ProductsList extends LightningElement {
         this.sortDirection = sortDirection;
         this.sortedBy = sortedBy;
     }
+// Sorting logic ENDs here *****************************************************
 
+//Calling child LWC method addProduct and passing priceBookEntryId and productListPrice on click of Add Product button
     handleRowAction(event) {
         this.addedPBEid = event.detail.row.Id;
         this.selectedProdPrice = event.detail.row.UnitPrice;
         this.template.querySelector("c-order-product-list").addProduct(this.addedPBEid, this.selectedProdPrice);
     }
+//handleRowAction method ENDs here **********************************************
 
+//This method is called form child LWC orderProduct when user click on Activate Order button
     handleStatusChange(event){
         this.orderStatus = event.detail;
         //Switching off the Add Order button by updating the disableButton field to true     
@@ -113,4 +128,6 @@ export default class ProductsList extends LightningElement {
             // Notify LDS about the Order Status Change to refresh detail page.
             getRecordNotifyChange([{recordId: this.recordId}]);
     }
+// handleStatusChange method ENDs here************************************************
 }
+//Definition of default class ENDs here
