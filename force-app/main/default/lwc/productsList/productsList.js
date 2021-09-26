@@ -53,7 +53,7 @@ export default class ProductsList extends LightningElement {
 //LDS wire ENDs here**********************************************************
 
 //wired call to apex method of class ProductListController to get priceBookentries to show in Table
-    @wire (getProductList, {orderid:  '$recordId', orderStatusparam: '$orderStatus'}) 
+    @wire (getProductList, {orderIdparam:  '$recordId', orderStatusparam: '$orderStatus'}) 
     WireProductRecords(result){
         if(result.data){
             let preparedProducts = [];
