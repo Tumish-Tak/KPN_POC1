@@ -99,19 +99,37 @@ export default class OrderProductList extends LightningElement {
             orderIdparam: this.orderId,
             listPriceparam: this.selectedprodPrice
         })
-        .then(() => { 
-                  //Show Success message toast                     
+        .then(result => {
+            let preparedOrderItems = [];
+            result.forEach(orderItemRec =>{
+                let preparedItem = {};
+                preparedItem.Id = orderItemRec.Id;
+                preparedItem.ProductName = orderItemRec.Product2.Name;
+                preparedItem.UnitPrice = orderItemRec.UnitPrice;
+                preparedItem.Quantity = orderItemRec.Quantity;
+                preparedItem.TotalPrice = orderItemRec.TotalPrice;
+                preparedOrderItems.push(preparedItem);
+            });
+            this.orderProducts = [...preparedOrderItems];
+            this.error =  undefined;
+             //Checking whether to set Activate Order button to Enabled or Disabled 
+             if(result[0].Order.Status==='Activated'){
+                this.disableActivateButton = true;
+            }
+            //Show Success message toast                     
                   const addProductEvent = new ShowToastEvent({
                     title:'Success!',
                     message:'OrderProduct added successfully',
                     variant:'success'
                   });
                   this.dispatchEvent(addProductEvent);
-                  //Refresh orderProductList table after successful upsert operation
-                  return refreshApex(this.wiredOrderProducts); 
+            //Refresh orderProductList table after successful upsert operation
+                 // return refreshApex(this.wiredOrderProducts); 
         })
         .catch((error) => {
-            this.message = 'Error received: code' + error.errorCode + ', ' + 'message ' + error.body.message;
+           // this.message = 'Error received: code' + error.errorCode + ', ' + 'message ' + error.body.message;
+            this.error = error;
+            this.orderProducts =  undefined;
         });
     }
 //Public method addProduct ENDs here ******************************************

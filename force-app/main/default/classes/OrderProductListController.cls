@@ -24,7 +24,7 @@ public with sharing class OrderProductListController {
      /*auraMethod to upsert OrderItems. Imperative call from LWC - OrderProductList.js
        addedby: Tumish Tak on 22-Sep-2021 */
     @AuraEnabled
-    public static void upsertOrderItem(id pbeIDparam,id orderIdparam,double listPriceparam ){
+    public static List<OrderItem> upsertOrderItem(id pbeIDparam,id orderIdparam,double listPriceparam ){
         try {  
             //Fetch list of existing orderitems. 
             //If exists then increment the quantity by +1 else insert new orderitem.
@@ -46,6 +46,11 @@ public with sharing class OrderProductListController {
                 insrtOrdItem.UnitPrice = listPriceparam;
                 insert insrtOrdItem;
             }
+
+            return [SELECT Id, Quantity, Product2Id, Product2.Name, UnitPrice, TotalPrice, Order.Status 
+                    FROM OrderItem
+                    WHERE OrderId =:orderIdparam
+                    WITH SECURITY_ENFORCED];
             
         } 
         catch (Exception e) {
