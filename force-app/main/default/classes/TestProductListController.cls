@@ -36,13 +36,22 @@ private class TestProductListController{
 											  FROM PricebookEntry
 											  WHERE Pricebook2Id=:pbList[0].Id
 											  WITH SECURITY_ENFORCED];
+		String nullSearchKey = null;
+		String searchKey = [SELECT ID,Name from Product2 LIMIT 1].Name;
+		List<PricebookEntry> pbeListwithKey = [SELECT Id,UnitPrice,Product2Id, Product2.Name
+											  FROM PricebookEntry
+										      WHERE Pricebook2Id=:pbList[0].Id AND Product2.Name LIKE :searchKey 
+											  WITH SECURITY_ENFORCED];									  	
 		//Testing Scope starts************************************************
 		test.startTest();
-			List<PricebookEntry> returnedPBEList = ProductListController.getProductList(ordList[0].Id, ordList[0].Status);
+			List<PricebookEntry> returnedPBEList = ProductListController.getProductList(ordList[0].Id, ordList[0].Status, nullSearchKey);
+			List<PricebookEntry> returnedSerchPBEList = ProductListController.getProductList(ordList[0].Id, ordList[0].Status, searchKey);
 		test.stopTest();
 		//Testing Scope ends**************************************************
 		
 		//Assert Statement
 		System.assertEquals(currentPbeList, returnedPBEList);
+		System.assertEquals(pbeListwithKey, returnedSerchPBEList);
+
 	}
 }

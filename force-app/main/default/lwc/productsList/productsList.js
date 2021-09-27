@@ -4,6 +4,8 @@ import getProductList from '@salesforce/apex/ProductListController.getProductLis
 import ORDER_OBJECT from '@salesforce/schema/Order';
 import ORDER_STATUS_FIELD from '@salesforce/schema/Order.Status';
 
+/** The delay used when debouncing event handlers before invoking Apex. */
+const DELAY = 300;
 // declaring constant properties and their attributes. **********************
 const COLUMNS = 
 [
@@ -30,15 +32,17 @@ export default class ProductsList extends LightningElement {
     @track productList;
     @track error;
     @track columns = COLUMNS; 
-    @track orderStatus;   
+    @track orderStatus;
+    @track searchDisabled;   
     defaultSortDirection = 'asc';
     sortDirection = 'asc';
     sortedBy;
     addedPBEid;
     selectedProdPrice;
+    searchKey = '';
 //property declaration ENDs here *********************************************    
  
-//LDS wire service to get current ORDER status to determine ENABLE/DISABLE Add Order button.
+//LDS wire service to get current ORDER status to determine ENABLE/DISABLE AddOrder button.
     @wire(getRecord, {recordId:'$recordId', fields: [ORDER_STATUS_FIELD]})
     wiredOrder({ error, data }) {
         if (data) {
@@ -53,7 +57,8 @@ export default class ProductsList extends LightningElement {
 //LDS wire ENDs here**********************************************************
 
 //wired call to apex method of class ProductListController to get priceBookentries to show in Table
-    @wire (getProductList, {orderIdparam:  '$recordId', orderStatusparam: '$orderStatus'}) 
+// Passing orderStatus as reactive so that it is chained to the previous wired call (defined just above)   
+@wire (getProductList, {orderIdparam:  '$recordId', orderStatusparam: '$orderStatus', searchKey: '$searchKey'}) 
     WireProductRecords(result){
         if(result.data){
             let preparedProducts = [];
@@ -67,6 +72,13 @@ export default class ProductsList extends LightningElement {
             });
             this.productList = [...preparedProducts];           
             this.error =  undefined;
+            // Enable-Disable logic for Search bar    
+                if(this.orderStatus==='Activated'){
+                    this.searchDisabled = true;
+                }
+                else{
+                    this.searchDisabled = false; 
+                }
         } else{
             this.error = result.error;
             this.productList =  undefined;
@@ -124,10 +136,18 @@ export default class ProductsList extends LightningElement {
                 preparedProducts.push(preparedProduct);
             });
             this.productList = [...preparedProducts]; 
-
+            this.searchDisabled = true;
             // Notify LDS about the Order Status Change to refresh detail page.
             getRecordNotifyChange([{recordId: this.recordId}]);
     }
 // handleStatusChange method ENDs here************************************************
+
+    handleKeyChange(event){
+        window.clearTimeout(this.delayTimeout);
+        const searchKey = event.target.value;
+        this.delayTimeout = setTimeout(() => {
+            this.searchKey = searchKey;
+        }, DELAY); 
+    }
 }
 //Definition of default class ENDs here
