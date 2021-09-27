@@ -41,9 +41,11 @@ private class TestOrderProductListController{
 							  FROM Order
 							  WITH SECURITY_ENFORCED];
 		List<OrderItem> ordItemList = [SELECT Id, Quantity, Product2Id, Product2.Name, UnitPrice, TotalPrice,PriceBookEntryId, Order.Status
-										FROM OrderItem];					  
+										FROM OrderItem];
+		List<Pricebook2> pbList = [SELECT id FROM Pricebook2 WHERE IsStandard=FALSE];													  
 		List<PricebookEntry> pbeList = [SELECT Id,UnitPrice 
-										FROM PricebookEntry];
+										FROM PricebookEntry
+										WHERE Pricebook2Id = :pbList[0].Id];
 		//Testing Scope starts************************************************
 		test.startTest();
 		    List<OrderItem> returnedList = OrderProductListController.upsertOrderItem(ordItemList[0].PriceBookEntryId, ordList[0].Id,(ordItemList[0].UnitPrice).doubleValue());
