@@ -1,8 +1,8 @@
-<!-- sldsValidatorIgnore -->
-<!-- sldsValidatorIgnore -->
+
 <template>
     <template if:true={orderProducts}>
         <lightning-card title = "Order Products" icon-name = "custom:custom61">
+    <!--Data table displaying the added order items--> 
             <lightning-button disabled={disableActivateButton} slot="actions" variant="brand" label="Activate Order" title="Activate Order" onclick={handleActivateOrder} class="slds-m-left_small"></lightning-button>
                 <lightning-datatable data={orderProducts} 
                                     columns={columns} 
@@ -16,6 +16,7 @@
                 </lightning-datatable>
         </lightning-card>
     </template>
+    <!--Show Error if data table is not wired properly and returns error -->
     <template if:true={error}>
         {error}
     </template>
