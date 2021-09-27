@@ -1,0 +1,22 @@
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
+<template>
+    <template if:true={orderProducts}>
+        <lightning-card title = "Order Products" icon-name = "custom:custom61">
+            <lightning-button disabled={disableActivateButton} slot="actions" variant="brand" label="Activate Order" title="Activate Order" onclick={handleActivateOrder} class="slds-m-left_small"></lightning-button>
+                <lightning-datatable data={orderProducts} 
+                                    columns={columns} 
+                                    key-field="Id"
+                                    show-row-number-column="true"
+                                    hide-checkbox-column
+                                    default-sort-direction={defaultSortDirection}
+                                    sorted-direction={sortDirection}
+                                    sorted-by={sortedBy}
+                                    onsort={onHandleSort}>                                
+                </lightning-datatable>
+        </lightning-card>
+    </template>
+    <template if:true={error}>
+        {error}
+    </template>
+</template>
