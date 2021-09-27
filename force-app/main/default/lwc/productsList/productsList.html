@@ -1,11 +1,10 @@
-<!-- sldsValidatorIgnore -->
-<!-- sldsValidatorIgnore -->
 <template>    
     <template if:true={productList}>
         
         <lightning-card title = "Available Products" icon-name = "custom:custom63"> 
             <lightning-input type="search" onchange={handleKeyChange} class="slds-m-bottom_small" label="Search Product" value={searchKey} disabled={searchDisabled}></lightning-input>
-                <lightning-datatable data={productList} 
+         <!--Displaying the Available Product List-->       
+            <lightning-datatable data={productList} 
                                     columns={columns} 
                                     key-field="Id"
                                     show-row-number-column="true"
@@ -16,13 +15,13 @@
                                     onsort={onHandleSort}
                                     onrowaction={handleRowAction}>
                 </lightning-datatable>
-                    
+         <!--Calling child LWC orderProductList and passing orderid-->           
              <c-order-product-list order-id={recordId} onstatuschange={handleStatusChange}></c-order-product-list>
         
         </lightning-card>
         
     </template>
-
+    <!--Show Error if data in the above data is not wired properly-->
     <template if:true={error}>
         {error}
     </template>
