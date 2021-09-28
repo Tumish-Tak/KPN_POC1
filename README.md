@@ -53,6 +53,7 @@ Build 2 LWC components and put them on the OrderDetail Page:
 
 **Solution Developed:**
     LWC Components and their Controller and Service classes:
+    
     a. *productList (Parent Component)*
         >productList.html
         >productList.js
@@ -76,5 +77,5 @@ Build 2 LWC components and put them on the OrderDetail Page:
     1.) The Order should have PriceBook2Id populated so that the Available Products LWC is loaded properly.
     2.) For existing draft orders there should not be any existing multiple order line items having same Product2Id Otherwise the quantity increment logic will fail.
     3.) The provided solution doesn't covers the integration part which was mentioned in the original UseCase word doc shared earlier. This solution was developed only for the main acceptance criteria.
-    
+
 **Demo Video Link**: https://vimeo.com/616073668
