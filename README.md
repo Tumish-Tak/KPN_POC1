@@ -53,11 +53,7 @@ Build 2 LWC components and put them on the OrderDetail Page:
 
 **Solution Developed:**
     LWC Components and their Controller and Service classes:
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> e59851873c52fdc8cbf3deb9fb2637d0cd57231a
     a. productList (Parent Component)
         >productList.html
         >productList.js
