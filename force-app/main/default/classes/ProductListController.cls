@@ -15,53 +15,58 @@ public with sharing class ProductListController {
         List<PricebookEntry> currntProdtPBElist = new List<PricebookEntry>();
         List<PricebookEntry> restProdtPBElist = new List<PricebookEntry>();
         List<PricebookEntry> finalsortedPBElist = new List<PricebookEntry>();
-      
-        Id pricebook2ID = [SELECT pricebook2Id FROM Order WHERE id=:orderIdparam AND Status=:orderStatusparam].pricebook2Id;
-        
+        List<Order> orderList = ProductListDataService.getOrderDetails(orderIDparam);
+        Id pricebook2ID = orderList[0].pricebook2Id;        
     //Map of existing order items
-        Map<Id, OrderItem> orderItemMap = new Map<Id, OrderItem>([SELECT id, Product2Id 
-                                                                  FROM OrderItem 
-                                                                  WHERE OrderID=: orderIdparam]);
+        Map<Id, OrderItem> orderItemMap = ProductListDataService.getOrderItemDetails(orderIdparam);
     // variable declaration ENDs here ********************************** 
-    if(String.isBlank(searchKey)){
-    //adding exisitng orderItem's product ids in the set 
-        if(!orderItemMap.isEmpty()){
-            for(OrderItem ordItm : orderItemMap.values()){
-            currntProductIdset.add(ordItm.Product2Id);
+        if(String.isBlank(searchKey)){
+            try{
+                //adding exisitng orderItem's product ids in the set 
+                    if(!orderItemMap.isEmpty()){
+                        for(OrderItem ordItm : orderItemMap.values()){
+                        currntProductIdset.add(ordItm.Product2Id);
+                        }
+                    }
+                //Map of PriceBookEntries
+                Map<id, PricebookEntry> priceBookEntryMap = ProductListDataService.getPriceBookEntries(pricebook2ID);
+
+                for(PricebookEntry pbe: priceBookEntryMap.values()){
+                    //list of existing already product PBEs
+                    if(currntProductIdset.contains(pbe.Product2Id)){
+                        currntProdtPBElist.add(pbe);
+                    }
+                    //list of non-existing product PBEs
+                    else{
+                        restProdtPBElist.add(pbe);
+                    }
+                }
+
+                //compiling the final sorted PBE list 
+                    if(!currntProdtPBElist.isEmpty()){                   
+                    finalsortedPBElist.addAll(currntProdtPBElist);
+                    }
+
+                    if(!restProdtPBElist.isEmpty()){
+                    finalsortedPBElist.addAll(restProdtPBElist);  
+                    }
+                
+                //returing the sorted list having existing product items in front of the lsit
+                    return finalsortedPBElist;
+            }
+            catch(Exception e){
+                throw new AuraHandledException(e.getmessage());
             }
         }
-
-    //list of existing already product PBEs
-        currntProdtPBElist = [SELECT Id,UnitPrice,Product2Id, Product2.Name
-                              FROM PricebookEntry
-                              WHERE Pricebook2Id=:pricebook2ID AND Product2Id IN :currntProductIdset 
-                              WITH SECURITY_ENFORCED];
-    //list of non-existing product PBEs
-        restProdtPBElist = [SELECT Id,UnitPrice,Product2Id, Product2.Name
-                            FROM PricebookEntry
-                            WHERE Pricebook2Id=:pricebook2ID AND Product2Id NOT IN :currntProductIdset 
-                            WITH SECURITY_ENFORCED];
-
-    //compiling the final sorted PBE list 
-        if(!currntProdtPBElist.isEmpty()){                   
-        finalsortedPBElist.addAll(currntProdtPBElist);
+        else{ // return the Search Key query result
+            String key = '%' + searchKey + '%';
+            try{
+                List<PricebookEntry> pbeList = ProductListDataService.getSrchKeyPriceBookEntries(pricebook2ID, key);
+                return pbeList;
+            }
+            catch(Exception e){
+                throw new AuraHandledException(e.getmessage());
+            }
         }
-
-        if(!restProdtPBElist.isEmpty()){
-        finalsortedPBElist.addAll(restProdtPBElist);  
-        }
-    
-    //returing the sorted list having existing product items in front of the lsit
-        return finalsortedPBElist;
-    }
-    else{
-        String key = '%' + searchKey + '%';
-        return [
-            SELECT Id,UnitPrice,Product2Id, Product2.Name
-            FROM PricebookEntry
-            WHERE Pricebook2Id=:pricebook2ID AND Product2.Name LIKE :key 
-            WITH SECURITY_ENFORCED
-        ];
-    }
     }
 }
