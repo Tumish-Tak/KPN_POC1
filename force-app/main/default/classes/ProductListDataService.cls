@@ -1,3 +1,10 @@
+/*
+* @author: Tumish TaK <tumish.tak@cognizant.com>
+* @createdDate: 28-Sep-2021
+* @lastModifiedBy: Tumish TaK <tumish.tak@cognizant.com>
+* @lastModifiedDate: 28-Sep-2021
+* @description: This class acts as a data provider for the controller class - ProductListController
+*/
 public with sharing class ProductListDataService {
    
     //fetching existing OrderItemDetails if any
