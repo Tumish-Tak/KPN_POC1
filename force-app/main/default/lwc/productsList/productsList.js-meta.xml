@@ -2,6 +2,7 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>52.0</apiVersion>
     <isExposed>true</isExposed>
+    <description>This component is used under OrderDetail Page to show suitable Products according to Order's Pricebook</description>
     <targets>
         <target>lightning__HomePage</target>
         <target>lightning__RecordPage</target>

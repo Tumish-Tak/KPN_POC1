@@ -2,4 +2,5 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>52.0</apiVersion>
     <isExposed>false</isExposed>
+    <description>This component is used under OrderDetail Page to show the added OrderProducts</description>
 </LightningComponentBundle>
